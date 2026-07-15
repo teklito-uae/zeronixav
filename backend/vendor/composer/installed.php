@@ -3,7 +3,7 @@
         'name' => 'zeronixav/backend',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'd491329b15553b35992870eb522eb8a7105484f5',
+        'reference' => 'aaaa6081bfb5488582c1427d9b4aa1a9a3ba4da4',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -1001,7 +1001,7 @@
         'zeronixav/backend' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'd491329b15553b35992870eb522eb8a7105484f5',
+            'reference' => 'aaaa6081bfb5488582c1427d9b4aa1a9a3ba4da4',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
