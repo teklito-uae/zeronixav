@@ -3,6 +3,7 @@ import { Suspense, lazy } from 'react'
 import RootLayout from '@/components/layout/RootLayout'
 import AdminLayout from '@/components/admin/AdminLayout'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
+import ScrollToTop from '@/components/ScrollToTop'
 
 // Public Pages
 const HomePage            = lazy(() => import('@/pages/HomePage'))
@@ -34,6 +35,7 @@ function PublicLayout() {
 export default function App() {
   return (
     <Suspense fallback={<LoadingSpinner />}>
+      <ScrollToTop />
       <Routes>
         {/* Admin Console Routes (Isolated from Public Layout) */}
         <Route path="/admin" element={<AdminLayout />}>
