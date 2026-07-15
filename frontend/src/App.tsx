@@ -7,6 +7,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner'
 // Public Pages
 const HomePage            = lazy(() => import('@/pages/HomePage'))
 const ServiceDetailPage   = lazy(() => import('@/pages/ServiceDetailPage'))
+const TeamSpaceDetailPage = lazy(() => import('@/pages/TeamSpaceDetailPage'))
 const ProductsCatalogPage = lazy(() => import('@/pages/ProductsCatalogPage'))
 const ProductDetailPage   = lazy(() => import('@/pages/ProductDetailPage'))
 const SolutionBuilderPage = lazy(() => import('@/pages/SolutionBuilderPage'))
@@ -50,6 +51,7 @@ export default function App() {
         <Route element={<PublicLayout />}>
           <Route path="/"                 element={<HomePage />} />
           <Route path="/services/:slug"   element={<ServiceDetailPage />} />
+          <Route path="/teamspace/:slug"  element={<TeamSpaceDetailPage />} />
           <Route path="/products"         element={<ProductsCatalogPage />} />
           <Route path="/products/:slug"   element={<ProductDetailPage />} />
           <Route path="/solution-builder" element={<SolutionBuilderPage />} />

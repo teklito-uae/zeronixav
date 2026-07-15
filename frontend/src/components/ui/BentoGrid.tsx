@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { ArrowUpRight, Video, Layers, ShieldCheck, Volume2, Server, Sparkles, Star, Clock } from 'lucide-react'
 import type { Service } from '@/types/api'
 import serviceSecBg from '@/assets/services/service-sec-bg.jpg'
+import meetingRoomBg from '@/assets/services/meeting-room-solutions.jpg'
 
 type Skin = 'dark' | 'light'
 
@@ -21,6 +22,7 @@ function getTileMeta(slug: string): TileMeta {
       skin: 'dark',
       featured: true,
       stat: { label: '500+ Rooms Deployed', icon: <Star size={13} className="text-amber-400 fill-amber-400" /> },
+      bgImage: meetingRoomBg,
     }
   }
   if (slug.includes('signage') || slug.includes('led')) {
@@ -69,6 +71,20 @@ export default function BentoGrid({ services }: { services: Service[] }) {
             to={`/services/${featured.slug}`}
             className={`group relative overflow-hidden rounded-xl lg:col-span-2 lg:row-span-2 min-h-[300px] p-6 sm:p-8 flex flex-col justify-between ${c.tile}`}
           >
+            {/* Background photo, blended into the emerald skin */}
+            {meta.bgImage && (
+              <>
+                <img
+                  src={meta.bgImage}
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute inset-0 w-full h-full object-cover object-center opacity-40 mix-blend-luminosity scale-110 group-hover:scale-100 transition-transform duration-700 ease-out"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-emerald-950 via-emerald-950/75 to-emerald-900/40" />
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-800/50 via-transparent to-black/30" />
+              </>
+            )}
+
             {/* Decorative blobs */}
             <div className="absolute -right-12 -top-16 w-56 h-56 rounded-full bg-white/10 blur-3xl pointer-events-none" />
             <div className="absolute -left-10 -bottom-16 w-48 h-48 rounded-full bg-emerald-400/20 blur-3xl pointer-events-none" />

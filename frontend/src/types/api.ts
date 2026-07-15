@@ -33,6 +33,7 @@ export interface Service {
   id: number
   title: string
   slug: string
+  type?: 'solution' | 'space_type'
   summary: string | null
   content: string | null
   seo_title: string | null
@@ -54,6 +55,7 @@ export interface Blog {
 
 export interface HomepageData {
   services: Service[]
+  space_types: Service[]
 }
 
 export interface Brand {

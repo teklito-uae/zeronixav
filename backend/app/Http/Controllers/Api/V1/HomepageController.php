@@ -15,10 +15,13 @@ class HomepageController extends Controller
      */
     public function index(): JsonResponse
     {
-        $services = Service::with(['products' => function ($query) {
-            $query->limit(20);
-        }])->get();
+        $services = Service::where('type', 'solution')
+            ->with(['products' => function ($query) {
+                $query->limit(20);
+            }])->get();
 
-        return response()->json(new HomepageResource($services));
+        $spaceTypes = Service::where('type', 'space_type')->get();
+
+        return response()->json(new HomepageResource($services, $spaceTypes));
     }
 }

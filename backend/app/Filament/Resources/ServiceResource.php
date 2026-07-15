@@ -34,6 +34,14 @@ class ServiceResource extends Resource
                         Forms\Components\TextInput::make('slug')
                             ->required()
                             ->unique(Service::class, 'slug', ignoreRecord: true),
+                        Forms\Components\Select::make('type')
+                            ->label('Section')
+                            ->options([
+                                'solution'   => 'Solution (homepage Bento grid + product carousel)',
+                                'space_type' => 'Space Type (homepage room-type grid)',
+                            ])
+                            ->default('solution')
+                            ->required(),
                         Forms\Components\Textarea::make('summary')
                             ->rows(3)
                             ->columnSpanFull()
@@ -114,10 +122,20 @@ MD)
             ->columns([
                 Tables\Columns\TextColumn::make('title')->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('slug')->searchable()->fontFamily('mono'),
+                Tables\Columns\TextColumn::make('type')
+                    ->badge()
+                    ->formatStateUsing(fn (string $state) => $state === 'space_type' ? 'Space Type' : 'Solution')
+                    ->color(fn (string $state) => $state === 'space_type' ? 'info' : 'success'),
                 Tables\Columns\TextColumn::make('products_count')->counts('products')->label('Linked Hardware')->badge(),
                 Tables\Columns\TextColumn::make('updated_at')->dateTime()->sortable(),
             ])
-            ->filters([])
+            ->filters([
+                Tables\Filters\SelectFilter::make('type')
+                    ->options([
+                        'solution'   => 'Solution',
+                        'space_type' => 'Space Type',
+                    ]),
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),

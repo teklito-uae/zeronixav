@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Service extends Model
 {
     protected $fillable = [
-        'title', 'slug', 'summary', 'content', 'seo_title', 'seo_description', 'keywords',
+        'title', 'slug', 'type', 'summary', 'content', 'seo_title', 'seo_description', 'keywords',
     ];
 
     protected $casts = [

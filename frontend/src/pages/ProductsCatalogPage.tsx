@@ -51,6 +51,7 @@ export default function ProductsCatalogPage() {
 
   const category = searchParams.get('category')
   const brand = searchParams.get('brand')
+  const search = searchParams.get('search')
   const priceMin = searchParams.get('price_min') ?? ''
   const priceMax = searchParams.get('price_max') ?? ''
   const page = Number(searchParams.get('page') ?? '1')
@@ -84,10 +85,11 @@ export default function ProductsCatalogPage() {
   })
 
   const { data: productsData, isLoading, isError } = useQuery<PaginatedResponse<Product>>({
-    queryKey: ['products', category, brand, priceMin, priceMax, page],
+    queryKey: ['products', category, brand, search, priceMin, priceMax, page],
     queryFn: () => api.get<PaginatedResponse<Product>>('/api/v1/products', {
       category: category ?? undefined,
       brand: brand ?? undefined,
+      search: search ?? undefined,
       price_min: priceMin || undefined,
       price_max: priceMax || undefined,
       page,
@@ -142,7 +144,7 @@ export default function ProductsCatalogPage() {
                 Home
               </Link>
               <ChevronRight size={12} className="text-text-muted shrink-0" />
-              {activeCategory ? (
+              {activeCategory || search ? (
                 <Link to="/products" className="hover:text-accent transition-colors">Shop All Products</Link>
               ) : (
                 <span className="text-text-primary font-medium">Shop All Products</span>
@@ -168,14 +170,16 @@ export default function ProductsCatalogPage() {
             </nav>
 
             <span className="text-xs font-semibold uppercase tracking-wider text-accent">
-              {activeCategory ? 'Category' : 'Full Catalog'}
+              {activeCategory ? 'Category' : search ? 'Search Results' : 'Full Catalog'}
             </span>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-text-primary mt-1.5 tracking-tight">
-              {activeCategory ? activeCategory.name : 'Shop All AV Products'}
+              {activeCategory ? activeCategory.name : search ? `Results for "${search}"` : 'Shop All AV Products'}
             </h1>
             <p className="text-sm text-text-secondary mt-2 max-w-2xl">
               {activeCategory
                 ? `Browsing ${activeCategory.name} — enterprise-grade hardware from Yealink, Shure, Crestron, Hikvision, Samsung, and more.`
+                : search
+                ? `Products matching "${search}" across our full catalog.`
                 : 'Enterprise-grade hardware from Yealink, Shure, Crestron, Hikvision, Samsung, and more — filter by category, brand, or budget.'}
             </p>
           </div>
