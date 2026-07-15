@@ -1,0 +1,26 @@
+export default function ProductCardSkeleton() {
+  return (
+    <div className="flex flex-col rounded-2xl border border-border bg-bg-raised overflow-hidden h-full animate-pulse">
+      <div className="aspect-[4/3] w-full bg-bg-surface" />
+
+      <div className="flex-1 flex flex-col p-4 sm:p-5">
+        <div className="h-4 bg-bg-surface rounded w-4/5 mb-2" />
+        <div className="h-3 bg-bg-surface rounded w-full mb-1.5" />
+        <div className="h-3 bg-bg-surface rounded w-2/3 mb-4" />
+
+        <div className="flex items-center gap-3 mb-4">
+          <div className="h-3 w-24 bg-bg-surface rounded" />
+          <div className="h-3 w-16 bg-bg-surface rounded" />
+        </div>
+
+        <div className="pt-3.5 border-t border-border flex items-center justify-between gap-3 mt-auto">
+          <div className="space-y-1.5">
+            <div className="h-2.5 w-10 bg-bg-surface rounded" />
+            <div className="h-4 w-20 bg-bg-surface rounded" />
+          </div>
+          <div className="h-8 w-24 bg-bg-surface rounded-full" />
+        </div>
+      </div>
+    </div>
+  )
+}
