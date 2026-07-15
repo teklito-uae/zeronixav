@@ -26,7 +26,7 @@ jobs:
           VITE_API_URL: https://zeronixtech.com/api
         run: |
           cd frontend
-          npm ci
+          npm ci --legacy-peer-deps
           npm run build
 
       - name: Set up PHP
