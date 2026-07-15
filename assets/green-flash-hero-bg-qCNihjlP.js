@@ -1,0 +1,1 @@
+var e=`/assets/green-flash-hero-bg-Bp_3Rrse.jpg`;export{e as t};
