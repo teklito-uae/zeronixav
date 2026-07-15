@@ -61,7 +61,7 @@ export default function ContactPage() {
         canonical="/contact"
       />
 
-      <div className="pt-20 pb-24 sm:pb-28 max-w-7xl mx-auto px-6">
+      <div className="pt-20 sm:pt-[7.25rem] pb-24 sm:pb-28 max-w-7xl mx-auto px-6">
         {/* Top Header Block */}
         <div className="text-center max-w-3xl mx-auto mb-14 sm:mb-16 space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent-muted border border-accent/15 text-xs text-accent uppercase tracking-wider font-semibold">

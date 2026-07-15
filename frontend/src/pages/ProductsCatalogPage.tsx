@@ -134,7 +134,7 @@ export default function ProductsCatalogPage() {
         canonical="/products"
       />
 
-      <div className="pt-16">
+      <div className="pt-16 sm:pt-[6.25rem]">
         <section className="border-b border-border bg-bg-surface py-8 sm:py-10">
           <div className="max-w-7xl mx-auto px-6">
             {/* Dynamic breadcrumbs — reflect the selected category chain */}

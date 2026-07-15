@@ -104,7 +104,7 @@ export default function SolutionBuilderPage() {
         canonical="/solution-builder"
       />
 
-      <div className="pt-20 pb-24 max-w-6xl mx-auto px-6">
+      <div className="pt-20 sm:pt-[7.25rem] pb-24 max-w-6xl mx-auto px-6">
         {/* Header Block */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 py-8 border-b border-border mb-8">
           <div>

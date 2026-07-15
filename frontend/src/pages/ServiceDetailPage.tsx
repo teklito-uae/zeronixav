@@ -175,7 +175,7 @@ export default function ServiceDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="pt-24 min-h-screen flex items-center justify-center">
+      <div className="pt-24 sm:pt-[8.25rem] min-h-screen flex items-center justify-center">
         <LoadingSpinner size="lg" />
       </div>
     )
@@ -192,7 +192,7 @@ export default function ServiceDetailPage() {
 
       <div className="pb-24 sm:pb-28">
         {/* ─── Hero: dark emerald backdrop blended with brand texture ─── */}
-        <section className="relative pt-28 sm:pt-32 pb-14 sm:pb-20 px-6 overflow-hidden bg-gradient-to-br from-emerald-950 via-emerald-900 to-zinc-950">
+        <section className="relative pt-28 sm:pt-[10.25rem] pb-14 sm:pb-20 px-6 overflow-hidden bg-gradient-to-br from-emerald-950 via-emerald-900 to-zinc-950">
           <img
             src={heroBg}
             alt=""

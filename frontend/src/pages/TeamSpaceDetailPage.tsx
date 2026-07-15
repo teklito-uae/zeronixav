@@ -211,7 +211,7 @@ export default function TeamSpaceDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="pt-24 min-h-screen flex items-center justify-center">
+      <div className="pt-24 sm:pt-[8.25rem] min-h-screen flex items-center justify-center">
         <LoadingSpinner size="lg" />
       </div>
     )
@@ -219,7 +219,7 @@ export default function TeamSpaceDetailPage() {
 
   if (isError || !service) {
     return (
-      <div className="pt-32 pb-24 min-h-[60vh] flex flex-col items-center justify-center gap-4 text-center px-6">
+      <div className="pt-32 sm:pt-[10.25rem] pb-24 min-h-[60vh] flex flex-col items-center justify-center gap-4 text-center px-6">
         <h1 className="text-2xl font-bold text-text-primary">We couldn't find that workspace.</h1>
         <p className="text-sm text-text-secondary max-w-md">
           This team workspace may have moved. Explore all the spaces we design for from the homepage.
@@ -243,7 +243,7 @@ export default function TeamSpaceDetailPage() {
         jsonLd={jsonLd}
       />
 
-      <div className="pb-24 sm:pb-28 pt-28 sm:pt-32">
+      <div className="pb-24 sm:pb-28 pt-28 sm:pt-[10.25rem]">
         {/* ─── Hero: intro copy + interactive product-spotlight image ─── */}
         <section className="max-w-5xl mx-auto px-6 space-y-8">
           <div className="text-center space-y-4">

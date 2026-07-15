@@ -63,7 +63,7 @@ export default function ProductDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="pt-24 min-h-screen flex items-center justify-center">
+      <div className="pt-24 sm:pt-[8.25rem] min-h-screen flex items-center justify-center">
         <LoadingSpinner size="lg" />
       </div>
     )
@@ -77,7 +77,7 @@ export default function ProductDetailPage() {
         canonical={`/products/${activeSlug}`}
       />
 
-      <div className="pt-20 pb-24 sm:pb-28">
+      <div className="pt-20 sm:pt-[7.25rem] pb-24 sm:pb-28">
         <div className="max-w-7xl mx-auto px-6 pt-8">
           <Link to="/#solutions" className="inline-flex items-center gap-2 text-xs font-medium text-text-secondary hover:text-accent transition-colors">
             <ArrowLeft size={14} />

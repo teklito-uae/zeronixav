@@ -11,6 +11,7 @@ import SpaceTypeGrid from '@/components/ui/SpaceTypeGrid'
 import SpaceTypeGridSkeleton from '@/components/ui/SpaceTypeGridSkeleton'
 import QuickCategoryGrid from '@/components/ui/QuickCategoryGrid'
 import CountryBannerStrip from '@/components/ui/CountryBannerStrip'
+import TestimonialsSection from '@/components/ui/TestimonialsSection'
 import { api } from '@/lib/api'
 import type { HomepageData, Service } from '@/types/api'
 
@@ -69,7 +70,7 @@ export default function HomePage() {
         canonical="/"
       />
 
-      <div className="pt-16">
+      <div className="pt-16 sm:pt-[6.25rem]">
         <HeroSlider />
 
         {/* ─── Brand Trust Strip ──────────────────────────────────────── */}
@@ -100,7 +101,7 @@ export default function HomePage() {
 
         <div className="py-16 sm:py-24 space-y-20 sm:space-y-28">
           {/* ─── Bento Solutions Grid ─────────────────────────────────── */}
-          <section id="solutions" className="max-w-7xl mx-auto px-6 scroll-mt-20">
+          <section id="solutions" className="max-w-7xl mx-auto px-6 scroll-mt-20 sm:scroll-mt-[7.25rem]">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-10 gap-3">
               <div>
                 <span className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-accent">
@@ -220,6 +221,9 @@ export default function HomePage() {
               ))}
             </div>
           </section>
+
+          {/* ─── Client Reviews (auto-scrolling testimonials) ──────────── */}
+          <TestimonialsSection />
 
           {/* ─── Closing CTA Banner ───────────────────────────────────── */}
           <section className="max-w-7xl mx-auto px-6">

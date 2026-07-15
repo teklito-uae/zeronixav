@@ -11,7 +11,7 @@ export default function NotFoundPage() {
         noindex
       />
 
-      <div className="min-h-[70vh] flex items-center justify-center px-6 pt-16">
+      <div className="min-h-[70vh] flex items-center justify-center px-6 pt-16 sm:pt-[6.25rem]">
         <div className="text-center max-w-md space-y-6">
           <div className="w-16 h-16 rounded-full bg-accent-muted border border-accent/15 flex items-center justify-center text-accent mx-auto">
             <Compass size={28} />
