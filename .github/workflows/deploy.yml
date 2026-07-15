@@ -139,6 +139,10 @@ jobs:
             fi
 
             php artisan storage:link || true
+            # storage:link only symlinks backend/public/storage, but the doc root
+            # is public_html (frontend lives there, backend is a subfolder), so
+            # asset URLs like /storage/products/... need a symlink at the root too.
+            ln -sfn "$BACKEND_PATH/storage/app/public" "$HOME/domains/blanchedalmond-owl-957896.hostingersite.com/public_html/storage"
             php artisan config:cache
             php artisan route:cache
             # view:cache is skipped: it force-compiles every Blade view, including
