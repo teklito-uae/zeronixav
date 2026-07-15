@@ -55,18 +55,20 @@ jobs:
           cp -r backend/* deploy/backend/
           rm -f deploy/backend/.env
 
-          # 3. Create Laravel storage folders and preserve them
+          # 3. Create Laravel storage/cache folders and preserve them
           mkdir -p deploy/backend/storage/app/public
           mkdir -p deploy/backend/storage/framework/cache
           mkdir -p deploy/backend/storage/framework/sessions
           mkdir -p deploy/backend/storage/framework/views
           mkdir -p deploy/backend/storage/logs
+          mkdir -p deploy/backend/bootstrap/cache
           touch deploy/backend/storage/app/public/.gitkeep
           touch deploy/backend/storage/framework/cache/.gitkeep
           touch deploy/backend/storage/framework/sessions/.gitkeep
           touch deploy/backend/storage/framework/views/.gitkeep
           touch deploy/backend/storage/logs/.gitkeep
-          chmod -R 775 deploy/backend/storage
+          touch deploy/backend/bootstrap/cache/.gitkeep
+          chmod -R 775 deploy/backend/storage deploy/backend/bootstrap/cache
 
           # 4. Create root .htaccess for routing
           cat > deploy/.htaccess <<EOF
