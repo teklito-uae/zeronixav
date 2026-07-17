@@ -10,6 +10,8 @@ import {
   Tag,
   Image,
   LogOut,
+  DownloadCloud,
+  ShoppingCart,
 } from 'lucide-react'
 import Logo from '@/components/ui/Logo'
 import { useAuthStore } from '@/store/authStore'
@@ -39,6 +41,13 @@ const NAV_GROUPS: NavGroup[] = [
       { name: 'Products', path: '/admin/products', icon: Box },
       { name: 'Categories', path: '/admin/categories', icon: FolderTree },
       { name: 'Brands', path: '/admin/brands', icon: Tag },
+      { name: 'Scraper', path: '/admin/scraper', icon: DownloadCloud },
+    ],
+  },
+  {
+    title: 'Sales',
+    items: [
+      { name: 'Orders', path: '/admin/orders', icon: ShoppingCart },
     ],
   },
   {

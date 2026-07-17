@@ -13,6 +13,9 @@ const ProductsCatalogPage = lazy(() => import('@/pages/ProductsCatalogPage'))
 const ProductDetailPage   = lazy(() => import('@/pages/ProductDetailPage'))
 const SolutionBuilderPage = lazy(() => import('@/pages/SolutionBuilderPage'))
 const ContactPage         = lazy(() => import('@/pages/ContactPage'))
+const CartPage             = lazy(() => import('@/pages/CartPage'))
+const CheckoutPage         = lazy(() => import('@/pages/CheckoutPage'))
+const OrderConfirmationPage = lazy(() => import('@/pages/OrderConfirmationPage'))
 const NotFoundPage        = lazy(() => import('@/pages/NotFoundPage'))
 
 // Admin Pages
@@ -23,6 +26,8 @@ const AdminBrandsPage     = lazy(() => import('@/pages/admin/AdminBrandsPage'))
 const AdminBannersPage    = lazy(() => import('@/pages/admin/AdminBannersPage'))
 const AdminServicesPage   = lazy(() => import('@/pages/admin/AdminServicesPage'))
 const AdminAiSettingsPage = lazy(() => import('@/pages/admin/AdminAiSettingsPage'))
+const AdminProductScraperPage = lazy(() => import('@/pages/admin/AdminProductScraperPage'))
+const AdminOrdersPage     = lazy(() => import('@/pages/admin/AdminOrdersPage'))
 
 function PublicLayout() {
   return (
@@ -44,6 +49,8 @@ export default function App() {
           <Route path="categories" element={<AdminCategoriesPage />} />
           <Route path="brands" element={<AdminBrandsPage />} />
           <Route path="banners" element={<AdminBannersPage />} />
+          <Route path="scraper" element={<AdminProductScraperPage />} />
+          <Route path="orders" element={<AdminOrdersPage />} />
           <Route path="services" element={<AdminServicesPage />} />
           <Route path="ai-settings" element={<AdminAiSettingsPage />} />
           <Route path="*" element={<AdminDashboardPage />} />
@@ -58,6 +65,9 @@ export default function App() {
           <Route path="/products/:slug"   element={<ProductDetailPage />} />
           <Route path="/solution-builder" element={<SolutionBuilderPage />} />
           <Route path="/contact"          element={<ContactPage />} />
+          <Route path="/cart"             element={<CartPage />} />
+          <Route path="/checkout"         element={<CheckoutPage />} />
+          <Route path="/order-confirmation/:orderNumber" element={<OrderConfirmationPage />} />
           <Route path="*"                 element={<NotFoundPage />} />
         </Route>
       </Routes>

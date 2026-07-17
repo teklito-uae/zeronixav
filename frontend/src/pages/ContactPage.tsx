@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { MapPin, Phone, Mail, Clock, Send, CheckCircle2, ShieldCheck, Building2 } from 'lucide-react'
+import { MapPin, Phone, Mail, Clock, Send, CheckCircle2, ShieldCheck, Building2, MessageCircle, Globe } from 'lucide-react'
 import SeoHead from '@/components/seo/SeoHead'
 import { api } from '@/lib/api'
 
@@ -56,8 +56,8 @@ export default function ContactPage() {
   return (
     <>
       <SeoHead
-        title="Contact ZeroNix AV — Al Quoz 1 HQ, Dubai"
-        description="Connect with CTS-certified AV integration engineers at ZeroNix AV Solutions. Headquarters in Al Quoz 1, Dubai."
+        title="Contact ZeroNix AV — Bur Dubai HQ, Dubai"
+        description="Connect with CTS-certified AV integration engineers at ZeroNix AV Solutions, part of Zeronix Technology LLC. Headquarters in Bur Dubai, Dubai."
         canonical="/contact"
       />
 
@@ -256,10 +256,10 @@ export default function ContactPage() {
                 </span>
                 <h3 className="text-xl font-bold text-text-primary flex items-center gap-2">
                   <Building2 size={20} className="text-accent" />
-                  Al Quoz 1, Dubai, UAE
+                  Bur Dubai, Dubai, UAE
                 </h3>
                 <p className="text-xs text-text-secondary leading-relaxed">
-                  Our engineering hub houses staging benches, acoustic calibration rooms, and our Dubai spare-parts replacement warehouse.
+                  Zeronix AV is part of Zeronix Technology LLC. Our engineering hub houses staging benches, acoustic calibration rooms, and our Dubai spare-parts replacement warehouse.
                 </p>
               </div>
 
@@ -267,25 +267,42 @@ export default function ContactPage() {
                 <div className="flex items-start gap-3">
                   <MapPin size={16} className="text-accent shrink-0 mt-0.5" />
                   <span className="text-text-secondary">
-                    Warehouse 14, Street 22a, Al Quoz Industrial Area 1, Dubai, United Arab Emirates
+                    Office 19, Khurram Building, Al Fahidi, Bur Dubai, Dubai, United Arab Emirates
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Phone size={16} className="text-accent shrink-0" />
-                  <a href="tel:+97148009376" className="text-text-primary font-medium hover:text-accent transition-colors">
-                    +971 (4) 800-ZERONIX
+                  <a href="tel:+971567850662" className="text-text-primary font-medium hover:text-accent transition-colors">
+                    +971 56 785 0662
                   </a>
                 </div>
                 <div className="flex items-center gap-3">
+                  <MessageCircle size={16} className="text-accent shrink-0" />
+                  <div className="flex flex-wrap gap-x-3 gap-y-1">
+                    <a href="https://wa.me/971509811669" target="_blank" rel="noreferrer" className="text-text-primary font-medium hover:text-accent transition-colors">
+                      +971 50 981 1669
+                    </a>
+                    <a href="https://wa.me/971567850662" target="_blank" rel="noreferrer" className="text-text-primary font-medium hover:text-accent transition-colors">
+                      +971 56 785 0662
+                    </a>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
                   <Mail size={16} className="text-accent shrink-0" />
-                  <a href="mailto:info@zeronixav.com" className="text-text-primary hover:text-accent transition-colors">
-                    info@zeronixav.com
+                  <a href="mailto:info@zeronix.ae" className="text-text-primary hover:text-accent transition-colors">
+                    info@zeronix.ae
+                  </a>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Globe size={16} className="text-accent shrink-0" />
+                  <a href="https://www.zeronix.ae" target="_blank" rel="noreferrer" className="text-text-primary hover:text-accent transition-colors">
+                    www.zeronix.ae
                   </a>
                 </div>
                 <div className="flex items-center gap-3">
                   <Clock size={16} className="text-accent shrink-0" />
                   <span className="text-text-secondary">
-                    Mon – Sat: 8:00 AM – 6:00 PM GST (24/7 support hotline active)
+                    Monday – Friday: 10:00 AM – 8:00 PM · Sunday: Closed
                   </span>
                 </div>
               </div>
@@ -293,8 +310,8 @@ export default function ContactPage() {
               {/* Google Maps Embed */}
               <div className="aspect-[16/9] rounded-xl overflow-hidden border border-border bg-bg-surface relative">
                 <iframe
-                  title="ZeroNix AV Al Quoz 1 Dubai HQ"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14445.69805903258!2d55.23194095!3d25.1551066!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f6a57c152a555%3A0x8e826ebff9bb20c2!2sAl%20Quoz%20-%20Al%20Quoz%20Industrial%20Area%201%20-%20Dubai!5e0!3m2!1sen!2sae!4v1700000000000!5m2!1sen!2sae"
+                  title="Zeronix Technology LLC Bur Dubai HQ"
+                  src="https://www.google.com/maps?q=Khurram+Building+Al+Fahidi+Bur+Dubai+Dubai+UAE&output=embed"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}

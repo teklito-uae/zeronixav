@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import SiteHeader from './SiteHeader'
 import Footer from './Footer'
 import MobileTabBar from './MobileTabBar'
+import { Toaster } from '@/components/ui/sonner'
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
@@ -12,6 +13,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </main>
       <Footer />
       <MobileTabBar />
+      <Toaster />
     </div>
   )
 }

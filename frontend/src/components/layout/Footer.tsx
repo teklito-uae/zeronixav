@@ -25,15 +25,15 @@ export default function Footer() {
           <div className="space-y-2.5">
             <div className="flex items-start gap-2 text-xs text-text-secondary">
               <MapPin size={13} className="mt-0.5 shrink-0 text-accent" />
-              Al Quoz 1, Dubai, UAE
+              Office 19, Khurram Building, Al Fahidi, Bur Dubai, Dubai, UAE
             </div>
-            <a href="tel:+971000000000" className="flex items-center gap-2 text-xs text-text-secondary hover:text-accent transition-colors">
+            <a href="tel:+971567850662" className="flex items-center gap-2 text-xs text-text-secondary hover:text-accent transition-colors">
               <Phone size={13} className="text-accent" />
-              +971 00 000 0000
+              +971 56 785 0662
             </a>
-            <a href="mailto:info@zeronixav.com" className="flex items-center gap-2 text-xs text-text-secondary hover:text-accent transition-colors">
+            <a href="mailto:info@zeronix.ae" className="flex items-center gap-2 text-xs text-text-secondary hover:text-accent transition-colors">
               <Mail size={13} className="text-accent" />
-              info@zeronixav.com
+              info@zeronix.ae
             </a>
           </div>
         </div>
@@ -87,10 +87,10 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-border px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
         <p className="text-xs text-text-muted">
-          &copy; {new Date().getFullYear()} ZeroNix AV Solutions LLC. All rights reserved.
+          &copy; {new Date().getFullYear()} Zeronix Technology LLC. All rights reserved.
         </p>
         <p className="text-xs text-text-muted">
-          Registered in Dubai, UAE — Trade License: XXXXXXXXX
+          Zeronix AV is part of Zeronix Technology LLC — Registered in Dubai, UAE
         </p>
       </div>
     </footer>

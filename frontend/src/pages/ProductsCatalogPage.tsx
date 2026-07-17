@@ -8,6 +8,7 @@ import ProductCard from '@/components/ui/ProductCard'
 import ProductCardSkeleton from '@/components/ui/ProductCardSkeleton'
 import CatalogFilters from '@/components/ui/CatalogFilters'
 import { api } from '@/lib/api'
+import { getPaginationRange } from '@/lib/pagination'
 import type { Product, Category, PaginatedResponse } from '@/types/api'
 
 interface BrandOption { id: number; name: string; slug: string }
@@ -27,22 +28,6 @@ function getCategoryChain(categories: Category[], slug: string | null): Category
     parentId = parent.parent_id
   }
   return chain
-}
-
-/** Numbered page list with '...' gaps, e.g. [1, '...', 4, 5, 6, '...', 12]. */
-function getPaginationRange(current: number, total: number): (number | '...')[] {
-  if (total <= 1) return [1]
-  const delta = 1
-  const range: (number | '...')[] = [1]
-  const start = Math.max(2, current - delta)
-  const end = Math.min(total - 1, current + delta)
-
-  if (start > 2) range.push('...')
-  for (let i = start; i <= end; i++) range.push(i)
-  if (end < total - 1) range.push('...')
-  range.push(total)
-
-  return range
 }
 
 export default function ProductsCatalogPage() {

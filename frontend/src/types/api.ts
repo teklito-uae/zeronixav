@@ -10,10 +10,14 @@ export interface Category {
 export interface Product {
   id: number
   sku: string
+  model_number: string | null
   title: string
   slug: string
   brand: string
   description: string | null
+  overview: string | null
+  long_description: string | null
+  warranty: string | null
   price: string
   stock: number
   category_id: number | null
@@ -106,4 +110,42 @@ export interface McpProduct {
 export interface ApiError {
   message: string
   errors?: Record<string, string[]>
+}
+
+export interface ScrapeBatch {
+  id: number
+  category_id: number
+  category?: Category
+  created_by: number | null
+  status: 'draft' | 'queued' | 'running' | 'completed' | 'completed_with_errors' | 'failed' | 'cancelled'
+  total_items: number
+  processed_items: number
+  failed_items: number
+  error_message: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface ScrapeItem {
+  id: number
+  scrape_batch_id: number
+  product_id: number | null
+  external_id: string | null
+  title: string
+  sku: string | null
+  model_number: string | null
+  brand_name: string | null
+  description: string | null
+  overview: string | null
+  long_description: string | null
+  warranty: string | null
+  price: string | number | null
+  stock: number | null
+  tech_specs: Record<string, string> | null
+  source_image_urls: string[] | null
+  stored_image_urls: string[] | null
+  source_url: string | null
+  status: 'pending' | 'processing' | 'done' | 'failed' | 'skipped'
+  status_message: string | null
+  error_message: string | null
 }

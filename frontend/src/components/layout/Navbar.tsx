@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { Menu, X, ChevronDown, Phone } from 'lucide-react'
+import { Menu, X, ChevronDown, Phone, ShoppingCart } from 'lucide-react'
 import { useUIStore } from '@/stores/uiStore'
+import { useCartStore } from '@/stores/cartStore'
 import ThemeToggle from '@/components/ui/ThemeToggle'
 import Logo from '@/components/ui/Logo'
 import CountrySelector from '@/components/layout/CountrySelector'
@@ -17,6 +18,7 @@ const SERVICE_LINKS = [
 export default function Navbar() {
   const { isMobileMenuOpen, toggleMobileMenu, closeMobileMenu } = useUIStore()
   const [servicesOpen, setServicesOpen] = useState(false)
+  const cartCount = useCartStore(s => s.items.reduce((sum, i) => sum + i.qty, 0))
 
   return (
     <header className="relative pt-safe bg-bg-primary/90 backdrop-blur-md border-b border-border">
@@ -78,8 +80,20 @@ export default function Navbar() {
         <div className="flex items-center gap-2 sm:gap-3">
           <CountrySelector />
           <ThemeToggle className="hidden sm:inline-flex" />
+          <Link
+            to="/cart"
+            className="relative inline-flex items-center justify-center w-10 h-10 rounded-full border border-border bg-bg-surface text-text-secondary hover:border-accent hover:text-accent transition-colors"
+            aria-label="View cart"
+          >
+            <ShoppingCart size={16} />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full bg-accent text-white text-[10px] font-semibold leading-none">
+                {cartCount}
+              </span>
+            )}
+          </Link>
           <a
-            href="tel:+97148009376"
+            href="tel:+971567850662"
             className="sm:hidden inline-flex items-center justify-center w-10 h-10 rounded-full border border-border bg-bg-surface text-text-secondary"
             aria-label="Call ZeroNix AV"
           >

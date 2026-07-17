@@ -12,39 +12,46 @@ import SpaceTypeGridSkeleton from '@/components/ui/SpaceTypeGridSkeleton'
 import QuickCategoryGrid from '@/components/ui/QuickCategoryGrid'
 import CountryBannerStrip from '@/components/ui/CountryBannerStrip'
 import TestimonialsSection from '@/components/ui/TestimonialsSection'
+import { useInView } from '@/hooks/useInView'
 import { api } from '@/lib/api'
-import type { HomepageData, Service } from '@/types/api'
+import type { HomepageData, Category, Product, PaginatedResponse } from '@/types/api'
 
 const BRANDS = ['Yealink', 'Logitech', 'Shure', 'Crestron', 'Hikvision', 'Samsung', 'LG', 'Jabra', 'Extron']
 
-function ServiceCarouselSection({ service }: { service: Service }) {
+/** Loads its products from the DB only once scrolled near — keeps initial page load to a single lightweight category list. */
+function CategoryProductCarouselSection({ category }: { category: Category }) {
+  const { ref, isInView } = useInView<HTMLElement>()
+
+  const { data, isLoading } = useQuery<PaginatedResponse<Product>>({
+    queryKey: ['category-products', category.slug],
+    queryFn: () => api.get<PaginatedResponse<Product>>('/api/v1/products', { category: category.slug }),
+    enabled: isInView,
+    staleTime: 5 * 60 * 1000,
+  })
+
+  const products = data?.data ?? []
+
   return (
-    <section>
+    <section ref={ref}>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-3">
         <div>
           <span className="text-xs font-semibold uppercase tracking-wider text-accent">
-            Recommended Hardware
+            Shop the Range
           </span>
           <h3 className="text-xl sm:text-2xl font-bold text-text-primary mt-0.5">
-            {service.title}
+            {category.name}
           </h3>
         </div>
         <Link
-          to={`/services/${service.slug}`}
+          to={`/products?category=${category.slug}`}
           className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:text-accent-hover transition-colors shrink-0"
         >
-          View all {service.products?.length || 0} products
+          View all {category.products_count ?? products.length} products
           <ArrowRight size={14} />
         </Link>
       </div>
 
-      {service.products && service.products.length > 0 ? (
-        <ProductCarousel products={service.products} />
-      ) : (
-        <div className="p-8 rounded-2xl border border-border bg-bg-surface text-center text-text-secondary text-sm">
-          No linked products pre-loaded for this category yet. Explore the full catalog on the service page.
-        </div>
-      )}
+      {!isInView || isLoading ? <ProductCarouselSkeleton /> : <ProductCarousel products={products} />}
     </section>
   )
 }
@@ -57,10 +64,15 @@ export default function HomePage() {
     staleTime: 5 * 60 * 1000
   })
 
+  const { data: categoriesData, isLoading: categoriesLoading } = useQuery<{ categories: Category[] }>({
+    queryKey: ['home-categories'],
+    queryFn: () => api.get<{ categories: Category[] }>('/api/v1/categories'),
+    staleTime: 5 * 60 * 1000
+  })
+
   const services = data?.services ?? []
   const spaceTypes = data?.space_types ?? []
-  const firstServices = services.slice(0, Math.ceil(services.length / 2))
-  const secondServices = services.slice(Math.ceil(services.length / 2))
+  const productCategories = (categoriesData?.categories ?? []).filter(c => (c.products_count ?? 0) > 0)
 
   return (
     <>
@@ -120,30 +132,11 @@ export default function HomePage() {
             {isLoading ? <SolutionsGridSkeleton /> : <BentoGrid services={services} />}
           </section>
 
-          {/* ─── Mixed Services + Products Rail ──────────────────────── */}
-          {isLoading ? (
+          {/* ─── Category Product Carousels (dynamic, DB-driven, lazy per section) ── */}
+          {categoriesLoading ? (
             <div className="max-w-7xl mx-auto px-6 space-y-16 sm:space-y-20">
               {Array.from({ length: 2 }).map((_, i) => (
-                <section key={`carousel-skeleton-a-${i}`}>
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-3 animate-pulse">
-                    <div className="space-y-2">
-                      <div className="h-3 w-40 bg-bg-surface rounded" />
-                      <div className="h-7 w-56 bg-bg-surface rounded" />
-                    </div>
-                    <div className="h-4 w-32 bg-bg-surface rounded" />
-                  </div>
-                  <ProductCarouselSkeleton />
-                </section>
-              ))}
-              <section>
-                <div className="text-center max-w-xl mx-auto mb-8 sm:mb-10 space-y-2 animate-pulse">
-                  <div className="h-3 w-32 bg-bg-surface rounded mx-auto" />
-                  <div className="h-7 w-72 bg-bg-surface rounded mx-auto" />
-                </div>
-                <SpaceTypeGridSkeleton />
-              </section>
-              {Array.from({ length: 1 }).map((_, i) => (
-                <section key={`carousel-skeleton-b-${i}`}>
+                <section key={`category-carousel-skeleton-${i}`}>
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-3 animate-pulse">
                     <div className="space-y-2">
                       <div className="h-3 w-40 bg-bg-surface rounded" />
@@ -155,40 +148,42 @@ export default function HomePage() {
                 </section>
               ))}
             </div>
-          ) : isError || services.length === 0 ? (
+          ) : productCategories.length > 0 ? (
+            <div className="max-w-7xl mx-auto px-6 space-y-16 sm:space-y-20">
+              {productCategories.map((category) => (
+                <CategoryProductCarouselSection key={`category-carousel-${category.id}`} category={category} />
+              ))}
+            </div>
+          ) : null}
+
+          {/* ─── Spaces We Design For (room-type grid) ────────────── */}
+          {isLoading ? (
+            <section className="max-w-7xl mx-auto px-6">
+              <div className="text-center max-w-xl mx-auto mb-8 sm:mb-10 space-y-2 animate-pulse">
+                <div className="h-3 w-32 bg-bg-surface rounded mx-auto" />
+                <div className="h-7 w-72 bg-bg-surface rounded mx-auto" />
+              </div>
+              <SpaceTypeGridSkeleton />
+            </section>
+          ) : isError ? (
             <div className="max-w-7xl mx-auto px-6">
               <div className="p-10 rounded-2xl border border-border bg-bg-surface text-center text-text-secondary text-sm">
-                {isError
-                  ? "We couldn't load our product catalog right now. Please refresh the page or check back shortly."
-                  : 'No solutions are available yet. Please check back shortly.'}
+                We couldn't load our product catalog right now. Please refresh the page or check back shortly.
               </div>
             </div>
-          ) : (
-            <div className="max-w-7xl mx-auto px-6 space-y-16 sm:space-y-20">
-              {firstServices.map((service) => (
-                <ServiceCarouselSection key={`carousel-${service.id || service.slug}`} service={service} />
-              ))}
-
-              {/* ─── Spaces We Design For (room-type grid) ────────────── */}
-              {spaceTypes.length > 0 && (
-                <section>
-                  <div className="text-center max-w-xl mx-auto mb-8 sm:mb-10">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-accent">
-                      Spaces We Design For
-                    </span>
-                    <h2 className="text-2xl sm:text-4xl font-extrabold text-text-primary mt-1.5 tracking-tight">
-                      One Integration Partner, Every Room Type
-                    </h2>
-                  </div>
-                  <SpaceTypeGrid spaceTypes={spaceTypes} />
-                </section>
-              )}
-
-              {secondServices.map((service) => (
-                <ServiceCarouselSection key={`carousel-${service.id || service.slug}`} service={service} />
-              ))}
-            </div>
-          )}
+          ) : spaceTypes.length > 0 ? (
+            <section className="max-w-7xl mx-auto px-6">
+              <div className="text-center max-w-xl mx-auto mb-8 sm:mb-10">
+                <span className="text-xs font-semibold uppercase tracking-wider text-accent">
+                  Spaces We Design For
+                </span>
+                <h2 className="text-2xl sm:text-4xl font-extrabold text-text-primary mt-1.5 tracking-tight">
+                  One Integration Partner, Every Room Type
+                </h2>
+              </div>
+              <SpaceTypeGrid spaceTypes={spaceTypes} />
+            </section>
+          ) : null}
 
           {/* ─── Regional Promotions (country-targeted, admin-managed) ── */}
           <CountryBannerStrip />

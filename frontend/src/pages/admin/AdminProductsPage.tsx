@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react'
-import { Box, Search, PlusCircle, Pencil, Trash2, Loader2 } from 'lucide-react'
+import { Box, Search, PlusCircle, Pencil, Trash2, Loader2, ChevronLeft, ChevronRight, Download } from 'lucide-react'
 import { toast } from 'sonner'
 import { api } from '@/lib/api'
-import type { Product, Category, Brand } from '@/types/api'
+import { getPaginationRange } from '@/lib/pagination'
+import type { Product, Category, Brand, PaginatedResponse } from '@/types/api'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import {
@@ -54,10 +56,14 @@ const EMPTY_FORM: ProductFormState = {
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([])
+  const [meta, setMeta] = useState<PaginatedResponse<Product>['meta'] | null>(null)
+  const [page, setPage] = useState(1)
   const [categories, setCategories] = useState<Category[]>([])
   const [brands, setBrands] = useState<Brand[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false)
 
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [sheetMode, setSheetMode] = useState<'add' | 'edit'>('add')
@@ -65,17 +71,33 @@ export default function AdminProductsPage() {
   const [form, setForm] = useState<ProductFormState>(EMPTY_FORM)
   const [isSaving, setIsSaving] = useState(false)
 
-  const loadData = async () => {
-    setIsLoading(true)
+  const loadLookups = async () => {
     try {
-      const [productsRes, categoriesRes, brandsRes] = await Promise.all([
-        api.get<{ products: Product[] }>('/api/v1/admin/products'),
+      const [categoriesRes, brandsRes] = await Promise.all([
         api.get<{ categories: Category[] }>('/api/v1/admin/categories'),
         api.get<{ brands: Brand[] }>('/api/v1/admin/brands'),
       ])
-      setProducts(productsRes.products)
       setCategories(categoriesRes.categories)
       setBrands(brandsRes.brands)
+    } catch {
+      toast.error('Could not reach the API. Is the backend running?')
+    }
+  }
+
+  const loadProducts = async (targetPage: number, search: string) => {
+    setIsLoading(true)
+    try {
+      const res = await api.get<PaginatedResponse<Product>>('/api/v1/admin/products', {
+        search: search || undefined,
+        page: targetPage,
+      })
+      if (res.data.length === 0 && targetPage > 1) {
+        setPage(targetPage - 1)
+        return
+      }
+      setProducts(res.data)
+      setMeta(res.meta)
+      setSelectedIds(new Set())
     } catch {
       toast.error('Could not reach the API. Is the backend running?')
     } finally {
@@ -84,8 +106,20 @@ export default function AdminProductsPage() {
   }
 
   useEffect(() => {
-    loadData()
+    loadLookups()
   }, [])
+
+  useEffect(() => {
+    const handle = setTimeout(() => {
+      loadProducts(page, searchQuery)
+    }, 300)
+    return () => clearTimeout(handle)
+  }, [page, searchQuery])
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value)
+    setPage(1)
+  }
 
   const handleOpenAdd = () => {
     setSheetMode('add')
@@ -143,7 +177,7 @@ export default function AdminProductsPage() {
         toast.success('Product updated.')
       }
       setIsSheetOpen(false)
-      loadData()
+      loadProducts(page, searchQuery)
     } catch (err: any) {
       toast.error(err?.response?.data?.message || 'Failed to save product.')
     } finally {
@@ -155,17 +189,78 @@ export default function AdminProductsPage() {
     if (!window.confirm(`Delete "${product.title}"? This cannot be undone.`)) return
     try {
       await api.delete(`/api/v1/admin/products/${product.id}`)
-      setProducts((prev) => prev.filter((p) => p.id !== product.id))
       toast.success('Product deleted.')
+      loadProducts(page, searchQuery)
     } catch {
       toast.error('Failed to delete product.')
     }
   }
 
-  const filtered = products.filter((p) =>
-    p.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.title.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  const toggleSelect = (id: number) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  const allOnPageSelected = products.length > 0 && products.every((p) => selectedIds.has(p.id))
+
+  const toggleSelectAll = () => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev)
+      if (allOnPageSelected) {
+        products.forEach((p) => next.delete(p.id))
+      } else {
+        products.forEach((p) => next.add(p.id))
+      }
+      return next
+    })
+  }
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.size === 0) return
+    if (!window.confirm(`Delete ${selectedIds.size} selected product(s)? This cannot be undone.`)) return
+    setIsBulkDeleting(true)
+    try {
+      await api.post('/api/v1/admin/products/bulk-delete', { ids: Array.from(selectedIds) })
+      toast.success(`${selectedIds.size} product(s) deleted.`)
+      loadProducts(page, searchQuery)
+    } catch {
+      toast.error('Failed to delete selected products.')
+    } finally {
+      setIsBulkDeleting(false)
+    }
+  }
+
+  const csvEscape = (value: string | number) => {
+    const s = String(value)
+    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
+  }
+
+  const handleExportSelected = () => {
+    const rows = products.filter((p) => selectedIds.has(p.id))
+    if (rows.length === 0) return
+
+    const header = ['SKU', 'Title', 'Brand', 'Category', 'Price', 'Stock']
+    const lines = [
+      header.join(','),
+      ...rows.map((p) =>
+        [p.sku, p.title, p.brand, p.category?.name ?? '', p.price, p.stock].map(csvEscape).join(',')
+      ),
+    ]
+
+    const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `products-export-${new Date().toISOString().slice(0, 10)}.csv`
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const paginationRange = meta ? getPaginationRange(meta.current_page, meta.last_page) : []
 
   return (
     <div className="space-y-4 animate-in fade-in duration-300">
@@ -175,7 +270,7 @@ export default function AdminProductsPage() {
             <Box className="w-5 h-5 text-accent" />
             <span>Products</span>
           </h1>
-          <p className="text-xs text-text-secondary mt-0.5">{products.length} SKUs in the catalog</p>
+          <p className="text-xs text-text-secondary mt-0.5">{meta?.total ?? 0} SKUs in the catalog</p>
         </div>
 
         <Button onClick={handleOpenAdd} size="sm">
@@ -188,11 +283,28 @@ export default function AdminProductsPage() {
         <Search className="w-4 h-4 text-text-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
         <Input
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => handleSearchChange(e.target.value)}
           placeholder="Search by SKU or title…"
           className="pl-9"
         />
       </div>
+
+      {selectedIds.size > 0 && (
+        <div className="flex items-center justify-between rounded-md border border-accent/30 bg-accent/5 px-4 py-2">
+          <span className="text-xs font-medium text-text-primary">{selectedIds.size} selected</span>
+          <div className="flex items-center gap-2">
+            <Button variant="secondary" size="sm" onClick={handleExportSelected}>
+              <Download className="w-4 h-4" />
+              <span>Export CSV</span>
+            </Button>
+            <Button variant="destructive" size="sm" onClick={handleBulkDelete} disabled={isBulkDeleting}>
+              {isBulkDeleting && <Loader2 className="w-4 h-4 animate-spin" />}
+              <Trash2 className="w-4 h-4" />
+              <span>Delete Selected</span>
+            </Button>
+          </div>
+        </div>
+      )}
 
       <div className="rounded-md border border-border bg-bg-surface overflow-hidden">
         {isLoading ? (
@@ -200,12 +312,15 @@ export default function AdminProductsPage() {
             <Loader2 className="w-4 h-4 animate-spin" />
             <span>Loading products…</span>
           </div>
-        ) : filtered.length === 0 ? (
+        ) : products.length === 0 ? (
           <div className="py-16 text-center text-text-muted text-xs">No products found.</div>
         ) : (
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-10">
+                  <Checkbox checked={allOnPageSelected} onCheckedChange={toggleSelectAll} aria-label="Select all" />
+                </TableHead>
                 <TableHead>SKU</TableHead>
                 <TableHead>Title</TableHead>
                 <TableHead>Brand</TableHead>
@@ -216,8 +331,15 @@ export default function AdminProductsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map((product) => (
+              {products.map((product) => (
                 <TableRow key={product.id}>
+                  <TableCell className="w-10">
+                    <Checkbox
+                      checked={selectedIds.has(product.id)}
+                      onCheckedChange={() => toggleSelect(product.id)}
+                      aria-label={`Select ${product.title}`}
+                    />
+                  </TableCell>
                   <TableCell className="font-mono font-medium text-accent whitespace-nowrap">{product.sku}</TableCell>
                   <TableCell className="max-w-xs">
                     <div className="font-medium text-text-primary truncate">{product.title}</div>
@@ -250,6 +372,60 @@ export default function AdminProductsPage() {
           </Table>
         )}
       </div>
+
+      {meta && meta.last_page > 1 && (
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <p className="text-xs text-text-muted">
+            Showing <span className="font-medium text-text-secondary">{(meta.current_page - 1) * meta.per_page + 1}</span>
+            {'–'}
+            <span className="font-medium text-text-secondary">
+              {Math.min(meta.current_page * meta.per_page, meta.total)}
+            </span>{' '}
+            of <span className="font-medium text-text-secondary">{meta.total}</span>
+          </p>
+
+          <nav aria-label="Pagination" className="flex items-center justify-center gap-1.5">
+            <button
+              onClick={() => setPage((p) => p - 1)}
+              disabled={page <= 1}
+              className="p-2 rounded-full border border-border bg-bg-surface text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:border-accent transition-colors"
+              aria-label="Previous page"
+            >
+              <ChevronLeft size={16} />
+            </button>
+
+            {paginationRange.map((entry, i) =>
+              entry === '...' ? (
+                <span key={`ellipsis-${i}`} className="px-1.5 text-xs text-text-muted select-none">
+                  …
+                </span>
+              ) : (
+                <button
+                  key={entry}
+                  onClick={() => setPage(entry)}
+                  aria-current={entry === meta.current_page ? 'page' : undefined}
+                  className={`min-w-[2.25rem] h-9 px-2 rounded-full text-xs font-semibold transition-colors ${
+                    entry === meta.current_page
+                      ? 'bg-accent text-white'
+                      : 'border border-border bg-bg-surface text-text-secondary hover:border-accent hover:text-accent'
+                  }`}
+                >
+                  {entry}
+                </button>
+              )
+            )}
+
+            <button
+              onClick={() => setPage((p) => p + 1)}
+              disabled={page >= meta.last_page}
+              className="p-2 rounded-full border border-border bg-bg-surface text-text-secondary disabled:opacity-40 disabled:cursor-not-allowed hover:border-accent transition-colors"
+              aria-label="Next page"
+            >
+              <ChevronRight size={16} />
+            </button>
+          </nav>
+        </div>
+      )}
 
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
         <SheetContent>

@@ -142,11 +142,11 @@ export default function ServiceDetailPage() {
         '@type': 'Organization',
         name: 'ZeroNix AV Solutions',
         url: SITE_URL,
-        telephone: '+97148009376',
+        telephone: '+971567850662',
         address: {
           '@type': 'PostalAddress',
-          streetAddress: 'Al Quoz 1',
-          addressLocality: 'Dubai',
+          streetAddress: 'Office 19, Khurram Building, Al Fahidi',
+          addressLocality: 'Bur Dubai, Dubai',
           addressCountry: 'AE',
         },
       },
@@ -249,11 +249,11 @@ export default function ServiceDetailPage() {
                 <ArrowRight size={16} />
               </Link>
               <a
-                href="tel:+97148009376"
+                href="tel:+971567850662"
                 className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/25 text-white font-semibold text-sm transition-all"
               >
                 <PhoneCall size={15} />
-                +971 (4) 800-ZERONIX
+                +971 56 785 0662
               </a>
             </div>
           </div>
@@ -353,8 +353,8 @@ export default function ServiceDetailPage() {
 
               <div className="p-4 rounded-xl bg-bg-surface border border-border text-center">
                 <span className="text-[11px] text-text-muted block mb-1">Direct Engineering Hotline</span>
-                <a href="tel:+97148009376" className="text-sm font-bold text-accent hover:underline">
-                  +971 (4) 800-ZERONIX
+                <a href="tel:+971567850662" className="text-sm font-bold text-accent hover:underline">
+                  +971 56 785 0662
                 </a>
               </div>
             </div>
