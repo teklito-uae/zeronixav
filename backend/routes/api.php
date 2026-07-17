@@ -20,7 +20,7 @@ use App\Http\Middleware\McpApiKey;
 */
 
 Route::prefix('v1')->group(function () {
-    // Optimized homepage payload: all active services with top 10 linked products pre-fetched
+    // Lightweight homepage payload: services/space-types metadata only (product counts, no rows)
     Route::get('/homepage-data', [HomepageController::class, 'index']);
 
     // Services Catalog
@@ -39,6 +39,10 @@ Route::prefix('v1')->group(function () {
     // Country-targeted homepage banners (falls back to default/global set)
     Route::get('/banners', [BannerController::class, 'index']);
 
+    // Checkout (Cash on Delivery) & guest order lookup
+    Route::post('/checkout', [\App\Http\Controllers\Api\V1\OrderController::class, 'store']);
+    Route::get('/orders/{order_number}', [\App\Http\Controllers\Api\V1\OrderController::class, 'show']);
+
     // Admin Console Endpoints
     Route::prefix('admin')->group(function () {
         Route::post('/login', [\App\Http\Controllers\Api\V1\Admin\AuthController::class, 'login']);
@@ -51,10 +55,26 @@ Route::prefix('v1')->group(function () {
             Route::post('/uploads', [\App\Http\Controllers\Api\V1\Admin\UploadController::class, 'store']);
 
             // Full RESTful CRUD endpoints for Admin Live Inventory
+            Route::post('/products/bulk-delete', [\App\Http\Controllers\Api\V1\Admin\ProductCrudController::class, 'bulkDestroy']);
             Route::apiResource('products', \App\Http\Controllers\Api\V1\Admin\ProductCrudController::class);
             Route::apiResource('categories', \App\Http\Controllers\Api\V1\Admin\CategoryCrudController::class);
             Route::apiResource('brands', \App\Http\Controllers\Api\V1\Admin\BrandCrudController::class);
             Route::apiResource('banners', \App\Http\Controllers\Api\V1\Admin\BannerCrudController::class);
+
+            // Orders (Cash on Delivery checkout admin management)
+            Route::get('/orders', [\App\Http\Controllers\Api\V1\Admin\OrderCrudController::class, 'index']);
+            Route::get('/orders/{id}', [\App\Http\Controllers\Api\V1\Admin\OrderCrudController::class, 'show']);
+            Route::patch('/orders/{id}', [\App\Http\Controllers\Api\V1\Admin\OrderCrudController::class, 'updateStatus']);
+
+            // Product Scraper: paste scraped category JSON, preview mapped rows, then run to queue image
+            // downloads + product upserts as background jobs.
+            Route::get('/scrape-batches', [\App\Http\Controllers\Api\V1\Admin\ScrapeBatchController::class, 'index']);
+            Route::post('/scrape-batches', [\App\Http\Controllers\Api\V1\Admin\ScrapeBatchController::class, 'store']);
+            Route::get('/scrape-batches/{batch}', [\App\Http\Controllers\Api\V1\Admin\ScrapeBatchController::class, 'show']);
+            Route::post('/scrape-batches/{batch}/run', [\App\Http\Controllers\Api\V1\Admin\ScrapeBatchController::class, 'run']);
+            Route::post('/scrape-batches/{batch}/stop', [\App\Http\Controllers\Api\V1\Admin\ScrapeBatchController::class, 'stop']);
+            Route::delete('/scrape-batches/{batch}', [\App\Http\Controllers\Api\V1\Admin\ScrapeBatchController::class, 'destroy']);
+            Route::patch('/scrape-batches/{batch}/items/{item}', [\App\Http\Controllers\Api\V1\Admin\ScrapeBatchController::class, 'updateItem']);
         });
     });
 });

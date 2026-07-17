@@ -1,0 +1,1 @@
+function e(e,t){if(t<=1)return[1];let n=[1],r=Math.max(2,e-1),i=Math.min(t-1,e+1);r>2&&n.push(`...`);for(let e=r;e<=i;e++)n.push(e);return i<t-1&&n.push(`...`),n.push(t),n}export{e as t};

@@ -1,0 +1,1 @@
+import{g as e}from"./index-v9A7meQi.js";function t(t,n){if(t<=0)return`Request Quote`;let r=e(n),i=t*r.rateToAed;return`${r.currencySymbol} ${i.toLocaleString(`en-US`,{minimumFractionDigits:2,maximumFractionDigits:2})}`}export{t};

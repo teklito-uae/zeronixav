@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Product extends Model
 {
     protected $fillable = [
-        'sku', 'title', 'slug', 'brand', 'description',
+        'sku', 'title', 'slug', 'brand', 'model_number', 'description', 'overview', 'long_description', 'warranty',
         'price', 'stock', 'category_id', 'tech_specs', 'images',
     ];
 
